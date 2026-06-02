@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v2.2</div>
+    <div style="font-size:10px;opacity:0.7">v2.3</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -534,7 +534,7 @@ async function generatePDF() {
 
     // Fahrten-Tabelle
     const rowTops = isNewFormat
-      ? [403,415,427,439,451,463,475,487,499,511,523,535,547,559,571,583,595,607,619,631]
+      ? [360,376,392,408,424,440,457,473,489,505,521,537,553,570,586,602,618,634,650,667]
       : [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
     const cols = isNewFormat
       ? {abfahrt:5, strecke:72, ankunft:413, km:470, pers:533}
