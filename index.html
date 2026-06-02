@@ -499,32 +499,57 @@ async function generatePDF() {
       });
     }
 
-    // Kopfdaten
-    txt(data.datum, 330, 205, 10);
-    txt(data.beginn, 110, 382, 12);
-    txt(data.ende, 110, 419, 12);
-    txt(getGesamtzeit(), 110, 456, 12);
-    txt(data.km_ende, 295, 382, 12);
-    txt(data.km_anfang, 300, 419, 12);
-    txt(getKmGesamt(), 308, 456, 12);
-    txt(data.sitzplaetze, 458, 294, 12);
-    txt(data.kennzeichen, 437, 342, 10);
-    txt(data.bef_personen, 440, 410, 12);
-    if (data.vorkommnisse) txt(data.vorkommnisse, 26, 877, 10);
+    // Detect PDF type by page size
+    const pdfW = Math.round(page.getWidth());
+    const isNewFormat = pdfW < 620; // New format: 595pt, Old: 661pt
+
+    if (isNewFormat) {
+      // NEW FORMAT (DB Fernverkehr, 595x842)
+      txt(data.fplo, 109, 106, 11);
+      txt(data.bef_personen, 415, 190, 11);
+      txt(data.beginn, 88, 252, 11);
+      txt(data.ende, 88, 287, 11);
+      txt(getGesamtzeit(), 88, 323, 11);
+      txt(data.km_ende, 355, 252, 11);
+      txt(data.km_anfang, 355, 287, 11);
+      txt(getKmGesamt(), 355, 323, 11);
+      txt(data.sitzplaetze, 456, 256, 11);
+      txt(data.kennzeichen, 452, 310, 10);
+      if (data.vorkommnisse) txt(data.vorkommnisse, 13, 803, 9);
+    } else {
+      // OLD FORMAT (DB Regio, 661x936)
+      txt(data.datum, 330, 205, 10);
+      txt(data.beginn, 110, 382, 12);
+      txt(data.ende, 110, 419, 12);
+      txt(getGesamtzeit(), 110, 456, 12);
+      txt(data.km_ende, 295, 382, 12);
+      txt(data.km_anfang, 300, 419, 12);
+      txt(getKmGesamt(), 308, 456, 12);
+      txt(data.sitzplaetze, 458, 294, 12);
+      txt(data.kennzeichen, 437, 342, 10);
+      txt(data.bef_personen, 440, 410, 12);
+      if (data.vorkommnisse) txt(data.vorkommnisse, 26, 877, 10);
+    }
 
     // Fahrten-Tabelle
-    // Spalten: Abfahrt 26-86, Strecke 87-363, Ankunft 364-425, KmStand 426-497, BefPers 498-560
-    // Zeilen starten bei y=550 (erste Datenzeile, PDF top coords)
-    const rowTops = [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
+    const rowTops = isNewFormat
+      ? [408,422,436,450,464,478,492,506,520,534,548,562,576,590,604,618,632,646,660,674]
+      : [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
+    const cols = isNewFormat
+      ? {abfahrt:13, strecke:66, ankunft:376, km:448, pers:519}
+      : {abfahrt:26, strecke:88, ankunft:365, km:427, pers:499};
+    const fSize = isNewFormat ? 9 : 9;
+    // override txt for fahrten to use col positions
+    function tRow(text, x, y) { if(text) txt(text, x, y, fSize); }
 
     data.fahrten.forEach((f, i) => {
       if (i >= rowTops.length) return;
       const y = rowTops[i];
-      txt(f.abfahrt, 27, y, 8);
-      txt(f.strecke, 88, y, 8);
-      txt(f.ankunft, 365, y, 8);
-      txt(f.km, 427, y, 8);
-      txt(f.personen, 499, y, 8);
+      tRow(f.abfahrt, cols.abfahrt, y);
+      tRow(f.strecke, cols.strecke, y);
+      tRow(f.ankunft, cols.ankunft, y);
+      tRow(f.km, cols.km, y);
+      tRow(f.personen, cols.pers, y);
     });
 
     const filled = await pdfDoc.save();
