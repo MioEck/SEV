@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v2.3</div>
+    <div style="font-size:10px;opacity:0.7">v2.4-debug</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -488,6 +488,12 @@ async function generatePDF() {
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    // DEBUG: show page dimensions and draw marker at table header
+    const dbgMsg = 'h=' + Math.round(height) + ' w=' + Math.round(width);
+    page.drawText(dbgMsg, {x: 5, y: height - 20, size: 7, font, color: rgb(1,0,0)});
+    // Draw red marker at y_param=360 (where row1 should be)
+    page.drawRectangle({x: 1, y: height - 360 - 9, width: 4, height: 9, color: rgb(1,0,0)});
 
     function txt(text, x, y, size=9, bold=false) {
       if (!text) return;
