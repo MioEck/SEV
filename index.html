@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v2.1</div>
+    <div style="font-size:10px;opacity:0.7">v2.2</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -512,7 +512,7 @@ async function generatePDF() {
       txt(data.ende, 103, 282, 11);
       txt(getGesamtzeit(), 103, 316, 11);
       txt(data.km_ende, 370, 248, 11);
-      txt(data.km_anfang, 370, 282, 11);
+      txt(data.km_anfang, 390, 282, 11);
       txt(getKmGesamt(), 370, 316, 11);
       txt(data.sitzplaetze, 456, 256, 11);
       txt(data.kennzeichen, 452, 310, 10);
@@ -534,10 +534,10 @@ async function generatePDF() {
 
     // Fahrten-Tabelle
     const rowTops = isNewFormat
-      ? [390,402,414,426,438,450,462,474,486,498,510,522,534,546,558,570,582,594,606,618]
+      ? [403,415,427,439,451,463,475,487,499,511,523,535,547,559,571,583,595,607,619,631]
       : [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
     const cols = isNewFormat
-      ? {abfahrt:5, strecke:68, ankunft:413, km:470, pers:533}
+      ? {abfahrt:5, strecke:72, ankunft:413, km:470, pers:533}
       : {abfahrt:26, strecke:88, ankunft:365, km:427, pers:499};
     const fSize = isNewFormat ? 9 : 9;
     // override txt for fahrten to use col positions
