@@ -465,17 +465,17 @@ async function generatePDF() {
     }
 
     // Kopfdaten
-    txt(data.datum, 325, 210, 9);
-    txt(data.beginn, 78, 387, 9);
-    txt(data.ende, 78, 424, 9);
-    txt(getGesamtzeit(), 100, 461, 9);
-    txt(data.km_ende, 292, 387, 9);
-    txt(data.km_anfang, 302, 424, 9);
-    txt(getKmGesamt(), 306, 461, 9);
-    txt(data.sitzplaetze, 458, 296, 9);
+    txt(data.datum, 330, 207, 8);
+    txt(data.beginn, 110, 384, 8);
+    txt(data.ende, 110, 421, 8);
+    txt(getGesamtzeit(), 110, 458, 8);
+    txt(data.km_ende, 295, 384, 8);
+    txt(data.km_anfang, 295, 421, 8);
+    txt(getKmGesamt(), 308, 458, 8);
+    txt(data.sitzplaetze, 458, 296, 8);
     txt(data.kennzeichen, 437, 344, 8);
-    txt(data.bef_personen, 440, 412, 9);
-    if (data.vorkommnisse) txt(data.vorkommnisse, 26, 878, 8);
+    txt(data.bef_personen, 440, 412, 8);
+    if (data.vorkommnisse) txt(data.vorkommnisse, 26, 878, 7);
 
     // Fahrten-Tabelle
     // Spalten: Abfahrt 26-86, Strecke 87-363, Ankunft 364-425, KmStand 426-497, BefPers 498-560
