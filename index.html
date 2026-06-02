@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v2.4-debug</div>
+    <div style="font-size:10px;opacity:0.7">v2.5</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -489,11 +489,7 @@ async function generatePDF() {
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-    // DEBUG: show page dimensions and draw marker at table header
-    const dbgMsg = 'h=' + Math.round(height) + ' w=' + Math.round(width);
-    page.drawText(dbgMsg, {x: 5, y: height - 20, size: 7, font, color: rgb(1,0,0)});
-    // Draw red marker at y_param=360 (where row1 should be)
-    page.drawRectangle({x: 1, y: height - 360 - 9, width: 4, height: 9, color: rgb(1,0,0)});
+
 
     function txt(text, x, y, size=9, bold=false) {
       if (!text) return;
@@ -540,7 +536,7 @@ async function generatePDF() {
 
     // Fahrten-Tabelle
     const rowTops = isNewFormat
-      ? [360,376,392,408,424,440,457,473,489,505,521,537,553,570,586,602,618,634,650,667]
+      ? [378,394,410,426,443,459,475,491,507,523,540,556,572,588,604,620,637,653,669,685]
       : [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
     const cols = isNewFormat
       ? {abfahrt:5, strecke:72, ankunft:413, km:470, pers:533}
