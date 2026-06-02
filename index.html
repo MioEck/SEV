@@ -510,9 +510,9 @@ async function generatePDF() {
       txt(data.beginn, 103, 248, 11);
       txt(data.ende, 103, 282, 11);
       txt(getGesamtzeit(), 103, 316, 11);
-      txt(data.km_ende, 310, 248, 11);
-      txt(data.km_anfang, 310, 282, 11);
-      txt(getKmGesamt(), 310, 316, 11);
+      txt(data.km_ende, 370, 248, 11);
+      txt(data.km_anfang, 370, 282, 11);
+      txt(getKmGesamt(), 370, 316, 11);
       txt(data.sitzplaetze, 456, 256, 11);
       txt(data.kennzeichen, 452, 310, 10);
       if (data.vorkommnisse) txt(data.vorkommnisse, 13, 803, 9);
@@ -533,10 +533,10 @@ async function generatePDF() {
 
     // Fahrten-Tabelle
     const rowTops = isNewFormat
-      ? [396,408,420,431,443,455,467,479,491,503,515,527,539,551,563,575,587,599,611,623]
+      ? [390,402,414,426,438,450,462,474,486,498,510,522,534,546,558,570,582,594,606,618]
       : [550,564,578,592,606,620,635,649,663,678,692,706,721,735,749,764,778,807];
     const cols = isNewFormat
-      ? {abfahrt:13, strecke:66, ankunft:376, km:448, pers:519}
+      ? {abfahrt:5, strecke:68, ankunft:413, km:470, pers:533}
       : {abfahrt:26, strecke:88, ankunft:365, km:427, pers:499};
     const fSize = isNewFormat ? 9 : 9;
     // override txt for fahrten to use col positions
