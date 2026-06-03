@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v3.7</div>
+    <div style="font-size:10px;opacity:0.7">v3.8</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -543,7 +543,7 @@ async function generatePDF() {
       txt(data.fplo,         109, 128, 11);   // Fplo Nummer
       txt(data.datum,        358, 112, 12, true); // Datum
       txt(data.umlauf,        87, 160, 11);   // Umlaufnummer
-      txt(data.bef_personen, 350, 178, 11);   // beförderte Personen
+      txt(data.bef_personen, 350, 188, 11);   // beförderte Personen
       txt(data.beginn,        103, 248, 11);   // Beginn Uhr
       txt(data.ende,          103, 282, 11);   // Ende Uhr
       txt(getGesamtzeit(),    103, 316, 11);   // Gesamtzeit
@@ -551,7 +551,7 @@ async function generatePDF() {
       txt(data.km_anfang,    370, 282, 11);   // Km-Anfang
       txt(getKmGesamt(),     370, 316, 11);   // Km-Gesamt
       txt(data.sitzplaetze,  456, 248, 11);   // Sitz+Stehplätze
-      txt(data.kennzeichen,  452, 305, 10);   // amtl. Kennzeichen
+      txt(data.kennzeichen,  452, 326, 10);   // amtl. Kennzeichen
       if (data.vorkommnisse) txt(data.vorkommnisse, 13, 803, 9);
     } else {
       // OLD FORMAT (DB Regio, 661x936)
