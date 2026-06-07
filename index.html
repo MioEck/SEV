@@ -165,7 +165,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v3.9</div>
+    <div style="font-size:10px;opacity:0.7">v4.0</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -356,6 +356,35 @@ function getKmGesamt() {
 }
 
 // ── Fahrten ───────────────────────────────────────────────────────────────────
+function reverseRoute(strecke) {
+  if (!strecke) return '';
+  // Trennzeichen erkennen: ' - ', ' – ', ', ', '. ', '  ' oder einfach Leerzeichen in der Mitte
+  const separators = [' - ', ' – ', ', ', '. '];
+  for (const sep of separators) {
+    const idx = strecke.indexOf(sep);
+    if (idx > 0) {
+      return strecke.slice(idx + sep.length) + sep + strecke.slice(0, idx);
+    }
+  }
+  // Fallback: Leerzeichen in der Mitte
+  const mid = Math.floor(strecke.length / 2);
+  const spaceAfter = strecke.indexOf(' ', mid);
+  const spaceBefore = strecke.lastIndexOf(' ', mid);
+  const split = (spaceAfter >= 0 && (spaceBefore < 0 || spaceAfter - mid < mid - spaceBefore))
+    ? spaceAfter : spaceBefore;
+  if (split > 0) return strecke.slice(split + 1) + ' ' + strecke.slice(0, split);
+  return '';
+}
+
+function autoSumPersonen() {
+  const total = data.fahrten.reduce((sum, f) => sum + (parseInt(f.personen) || 0), 0);
+  if (total > 0) {
+    data.bef_personen = String(total);
+    const el = document.getElementById('bef_personen');
+    if (el) el.value = total;
+  }
+}
+
 function renderFahrten() {
   const c = document.getElementById('fahrten-container');
   c.innerHTML = '';
@@ -363,6 +392,8 @@ function renderFahrten() {
 }
 
 function makeFahrtCard(f, i) {
+  const prev = i > 0 ? data.fahrten[i - 1] : null;
+  const suggestion = prev ? reverseRoute(prev.strecke) : '';
   const div = document.createElement('div');
   div.className = 'fahrt-card';
   div.dataset.id = f.id;
@@ -375,12 +406,24 @@ function makeFahrtCard(f, i) {
       <div class="field"><label>Abfahrt</label><input type="time" class="f-abfahrt" value="${f.abfahrt||''}" oninput="save()"></div>
       <div class="field"><label>Ankunft</label><input type="time" class="f-ankunft" value="${f.ankunft||''}" oninput="save()"></div>
     </div>
-    <div class="field"><label>Strecke (von – nach)</label><input type="text" class="f-strecke" value="${f.strecke||''}" placeholder="z.B. Kiel Hbf – Neumünster" oninput="save()"></div>
+    <div class="field">
+      <label>Strecke (von – nach)</label>
+      <input type="text" class="f-strecke" value="${f.strecke||''}" placeholder="z.B. Flensburg – Schleswig" oninput="save()">
+      ${suggestion && !f.strecke ? `<button type="button" style="margin-top:5px;width:100%;padding:7px;background:#fff0f0;border:1px solid #f0cece;border-radius:6px;color:#cc0000;font-size:12px;font-weight:600;cursor:pointer;text-align:left" onclick="applyRoute('${f.id}','${suggestion.replace(/'/g,"\\'")}')">↩ ${suggestion}</button>` : ''}
+    </div>
     <div class="grid2">
       <div class="field"><label>Km-Stand</label><input type="number" class="f-km" value="${f.km||''}" oninput="save()"></div>
-      <div class="field"><label>Pers.</label><input type="number" class="f-personen" value="${f.personen||''}" oninput="save()"></div>
+      <div class="field"><label>Pers.</label><input type="number" class="f-personen" value="${f.personen||''}" oninput="save(); autoSumPersonen()"></div>
     </div>`;
   return div;
+}
+
+function applyRoute(id, route) {
+  const card = document.querySelector(`.fahrt-card[data-id="${id}"]`);
+  if (!card) return;
+  card.querySelector('.f-strecke').value = route;
+  save();
+  renderFahrten();
 }
 
 function addFahrt() {
