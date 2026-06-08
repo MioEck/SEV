@@ -3,39 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#cc0000">
+<meta name="theme-color" content="#0a1628">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>SEV Fahrtbericht</title>
 <link rel="manifest" href="manifest.json">
 <style>
   :root {
-    --red: #cc0000;
-    --dark: #1a1a1a;
-    --bg: #f4f4f4;
-    --card: #ffffff;
-    --border: #ddd;
-    --text: #222;
-    --muted: #777;
-    --green: #2a7a2a;
+    --primary: #00c8e8;
+    --primary-dark: #0099bb;
+    --orange: #ff8c1a;
+    --dark: #0a1628;
+    --navy: #132843;
+    --bg: #0d1e35;
+    --card: #1a3350;
+    --border: #1e4070;
+    --text: #e0f0f8;
+    --muted: #6a9ab8;
+    --green: #00c87a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
   header {
-    background: var(--red);
+    background: linear-gradient(135deg, #0a1628 0%, #0f2744 100%);
     color: white;
     padding: 14px 16px 12px;
     display: flex; justify-content: space-between; align-items: center;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 16px rgba(0,200,232,0.15);
+    border-bottom: 1px solid rgba(0,200,232,0.2);
   }
-  header h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.02em; }
-  header span { font-size: 12px; opacity: 0.85; }
+  header h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.02em; color: var(--primary); }
+  header span { font-size: 12px; opacity: 0.85; color: var(--primary); }
 
   nav {
     display: flex;
-    background: white;
+    background: var(--navy);
     border-bottom: 1px solid var(--border);
     position: sticky; top: 56px; z-index: 99;
   }
@@ -45,13 +49,13 @@
     border-bottom: 3px solid transparent; font-weight: 600;
     letter-spacing: 0.03em; transition: all 0.15s;
   }
-  nav button.active { color: var(--red); border-bottom-color: var(--red); }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
 
   main { padding: 14px 12px 100px; max-width: 600px; margin: 0 auto; }
 
   .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
-    color: var(--red); text-transform: uppercase;
+    color: var(--primary); text-transform: uppercase;
     margin: 18px 0 10px; padding-left: 2px;
   }
 
@@ -60,61 +64,61 @@
   .field input, .field textarea, .field select {
     width: 100%; padding: 10px 12px;
     border: 1px solid var(--border); border-radius: 8px;
-    font-size: 15px; background: white; color: var(--text);
+    font-size: 15px; background: var(--navy); color: var(--text);
     -webkit-appearance: none; outline: none;
     transition: border-color 0.15s;
   }
-  .field input:focus, .field textarea:focus { border-color: var(--red); }
+  .field input:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,200,232,0.15); }
   .field textarea { resize: vertical; min-height: 70px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
   .calc-box {
-    background: #fff8f8; border: 1px solid #f0cece; border-radius: 8px;
-    padding: 10px 14px; font-size: 13px; color: var(--red);
+    background: rgba(0,200,232,0.08); border: 1px solid rgba(0,200,232,0.25); border-radius: 8px;
+    padding: 10px 14px; font-size: 13px; color: var(--primary);
     font-weight: 600; margin-bottom: 12px;
   }
 
   .fahrt-card {
-    background: white; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
     padding: 14px; margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
   }
   .fahrt-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 12px;
   }
-  .fahrt-nr { font-size: 12px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; }
+  .fahrt-nr { font-size: 12px; font-weight: 700; color: var(--orange); letter-spacing: 0.08em; }
   .btn-del {
-    background: none; border: none; color: #ccc; font-size: 18px;
+    background: none; border: none; color: var(--muted); font-size: 18px;
     cursor: pointer; padding: 2px 6px; border-radius: 4px;
     transition: color 0.15s;
   }
-  .btn-del:hover { color: var(--red); }
+  .btn-del:hover { color: #ff4444; }
 
   .btn-add {
     width: 100%; padding: 13px; background: none;
-    border: 2px dashed var(--red); border-radius: 10px;
-    color: var(--red); font-size: 14px; font-weight: 600;
+    border: 2px dashed var(--primary); border-radius: 10px;
+    color: var(--primary); font-size: 14px; font-weight: 600;
     cursor: pointer; letter-spacing: 0.05em;
     transition: background 0.15s;
   }
-  .btn-add:hover { background: #fff0f0; }
+  .btn-add:hover { background: rgba(0,200,232,0.08); }
 
   .preview-card {
-    background: white; border-radius: 10px; padding: 14px;
+    background: var(--card); border-radius: 10px; padding: 14px;
     margin-bottom: 12px; border: 1px solid var(--border);
   }
   .preview-row {
     display: flex; justify-content: space-between; align-items: flex-start;
-    padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px;
+    padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px;
   }
   .preview-row:last-child { border-bottom: none; }
   .preview-row .pk { color: var(--muted); flex-shrink: 0; margin-right: 12px; }
   .preview-row .pv { font-weight: 500; text-align: right; }
 
   .fahrt-preview {
-    padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px;
+    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
   }
   .fahrt-preview:last-child { border-bottom: none; }
   .fahrt-preview .fp-route { font-weight: 500; }
@@ -122,21 +126,24 @@
 
   footer {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: white; border-top: 1px solid var(--border);
+    background: var(--navy); border-top: 1px solid var(--border);
     padding: 10px 12px; display: flex; gap: 10px;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.4);
   }
   .btn-save {
-    flex: 1; padding: 13px; background: var(--red); color: white;
-    border: none; border-radius: 8px; font-size: 14px; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.04em; transition: background 0.15s;
+    flex: 1; padding: 13px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--dark); border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.04em; transition: opacity 0.15s;
   }
-  .btn-save:hover { background: #aa0000; }
-  .btn-save.saved { background: var(--green); }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-save.saved { background: var(--green); color: white; }
   .btn-pdf {
-    padding: 13px 16px; background: #1a1a1a; color: white;
-    border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.03em;
+    padding: 13px 16px;
+    background: linear-gradient(135deg, var(--orange) 0%, #cc6a00 100%);
+    color: white; border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.03em;
   }
   .btn-reset {
     padding: 13px 14px; background: none; color: var(--muted);
@@ -149,7 +156,9 @@
 
   .toast {
     position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-    background: #222; color: white; padding: 10px 20px; border-radius: 20px;
+    background: var(--navy); color: var(--primary);
+    border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 20px;
     font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s;
     white-space: nowrap;
   }
@@ -165,7 +174,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v4.1</div>
+    <div style="font-size:10px;opacity:0.7">v4.2</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>

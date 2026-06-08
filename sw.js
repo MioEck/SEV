@@ -1,4 +1,4 @@
-const CACHE = 'sev-v41';
+const CACHE = 'sev-v42';
 const FILES = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
