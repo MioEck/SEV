@@ -174,7 +174,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v4.2</div>
+    <div style="font-size:10px;opacity:0.7">v4.3</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -193,7 +193,7 @@
   <div class="section-title">Tages-PDF</div>
   <div id="pdf-upload-area" style="margin-bottom:16px">
     <label for="pdf-upload" style="display:block;cursor:pointer">
-      <div id="pdf-upload-box" style="border:2px dashed #ccc;border-radius:10px;padding:16px;text-align:center;font-size:13px;color:#777;transition:all 0.2s">
+      <div id="pdf-upload-box" style="border:2px dashed #1e4070;border-radius:10px;padding:16px;text-align:center;font-size:13px;color:#6a9ab8;transition:all 0.2s;background:#132843">
         <div style="font-size:24px;margin-bottom:4px">📄</div>
         <div id="pdf-upload-label">Tages-PDF hier antippen zum Hochladen</div>
       </div>
@@ -520,25 +520,29 @@ async function savePDFtoDB(bytes, name) {
   tx.objectStore('files').put(name, 'templateName');
 }
 async function loadPDFfromDB() {
-  const db = await openDB();
-  return new Promise(res => {
-    const tx = db.transaction('files', 'readonly');
-    const store = tx.objectStore('files');
-    const rBytes = store.get('template');
-    const rName  = store.get('templateName');
-    let bytes, name;
-    rBytes.onsuccess  = e => { bytes = e.target.result; if (name !== undefined) res({bytes, name}); };
-    rName.onsuccess   = e => { name  = e.target.result; if (bytes !== undefined) res({bytes, name}); };
-    rBytes.onerror = rName.onerror = () => res(null);
-  });
+  try {
+    const db = await openDB();
+    return new Promise(res => {
+      const tx = db.transaction('files', 'readonly');
+      const store = tx.objectStore('files');
+      const rBytes = store.get('template');
+      const rName  = store.get('templateName');
+      let bytes, name, bytesReady = false, nameReady = false;
+      function check() { if (bytesReady && nameReady) res(bytes ? {bytes, name} : null); }
+      rBytes.onsuccess  = e => { bytes = e.target.result; bytesReady = true; check(); };
+      rName.onsuccess   = e => { name  = e.target.result; nameReady  = true; check(); };
+      rBytes.onerror = () => { bytesReady = true; check(); };
+      rName.onerror  = () => { nameReady  = true; check(); };
+    });
+  } catch(e) { return null; }
 }
 
 function setPDFLabel(name) {
   const label = document.getElementById('pdf-upload-label');
   const box   = document.getElementById('pdf-upload-box');
   label.textContent = '✓ ' + name;
-  box.style.borderColor = '#2a7a2a';
-  box.style.color = '#2a7a2a';
+  box.style.borderColor = '#00c8e8';
+  box.style.color = '#00c8e8';
 }
 
 function loadPDF(input) {
