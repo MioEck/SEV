@@ -174,7 +174,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v4.3</div>
+    <div style="font-size:10px;opacity:0.7">v4.4</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -513,6 +513,20 @@ function openDB() {
     r.onerror = rej;
   });
 }
+function uint8ToBase64(bytes) {
+  let binary = '';
+  const chunk = 8192;
+  for (let i = 0; i < bytes.length; i += chunk)
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(binary);
+}
+function base64ToUint8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
 async function savePDFtoDB(bytes, name) {
   const db = await openDB();
   const tx = db.transaction('files', 'readwrite');
@@ -548,10 +562,18 @@ function setPDFLabel(name) {
 function loadPDF(input) {
   const file = input.files[0];
   if (!file) return;
+  showToast('Wird geladen…');
   const reader = new FileReader();
-  reader.onload = async function(e) {
+  reader.onload = function(e) {
     uploadedPDFBytes = new Uint8Array(e.target.result);
-    await savePDFtoDB(uploadedPDFBytes, file.name);
+    // Synchron in localStorage speichern → überlebt iOS-Reload
+    try {
+      const b64 = uint8ToBase64(uploadedPDFBytes);
+      localStorage.setItem('sev_pdf_b64', b64);
+      localStorage.setItem('sev_pdf_name', file.name);
+    } catch(err) { console.warn('localStorage voll:', err); }
+    // Zusätzlich in IndexedDB
+    savePDFtoDB(uploadedPDFBytes, file.name);
     setPDFLabel(file.name);
     showToast('PDF geladen: ' + file.name);
   };
@@ -662,13 +684,20 @@ async function generatePDF() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 fillDOM();
-// PDF aus IndexedDB wiederherstellen
-loadPDFfromDB().then(result => {
-  if (result && result.bytes && result.bytes.byteLength > 0) {
-    uploadedPDFBytes = result.bytes;
-    setPDFLabel(result.name || 'Vorlage');
+// PDF wiederherstellen: zuerst localStorage (iOS-sicher), dann IndexedDB
+const _b64 = localStorage.getItem('sev_pdf_b64');
+const _pdfName = localStorage.getItem('sev_pdf_name');
+if (_b64) {
+  try {
+    uploadedPDFBytes = base64ToUint8(_b64);
+    setPDFLabel(_pdfName || 'Vorlage');
+  } catch(e) {
+    localStorage.removeItem('sev_pdf_b64');
+    loadPDFfromDB().then(r => { if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Vorlage'); }});
   }
-});
+} else {
+  loadPDFfromDB().then(r => { if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Vorlage'); }});
+}
 </script>
 <script>
 if ("serviceWorker" in navigator) {
