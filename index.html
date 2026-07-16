@@ -644,7 +644,7 @@ async function generatePDF() {
     if (isNewFormat) {
       // NEW FORMAT (DB SEV GmbH Fahrbericht, 595x842)
       txt(data.fplo,         109, 128, 11);   // Fplo Nummer
-      // Datum nicht schreiben – steht bereits vorgedruckt im Formular
+      txt(data.datum,        358, 112, 12, true); // Datum
       txt(data.umlauf,        87, 160, 11);   // Umlaufnummer
       txt(data.bef_personen, 350, 196, 11);   // beförderte Personen
       txt(data.beginn,        103, 248, 11);   // Beginn Uhr
@@ -658,7 +658,7 @@ async function generatePDF() {
       if (data.vorkommnisse) txt(data.vorkommnisse, 13, 803, 9);
     } else {
       // OLD FORMAT (DB Regio, 661x936)
-      // Datum nicht schreiben – steht bereits vorgedruckt im Formular
+      txt(data.datum, 330, 205, 10);
       txt(data.beginn, 110, 382, 12);
       txt(data.ende, 110, 419, 12);
       txt(getGesamtzeit(), 110, 456, 12);
