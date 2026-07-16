@@ -174,7 +174,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v4.11</div>
+    <div style="font-size:10px;opacity:0.7">v4.12</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -685,11 +685,11 @@ async function generatePDF() {
     data.fahrten.forEach((f, i) => {
       if (i >= rowTops.length) return;
       const y = rowTops[i];
-      tRow(f.abfahrt, cols.abfahrt, y);
-      tRow(f.strecke, cols.strecke, y + 7);
-      tRow(f.ankunft, cols.ankunft, y);
-      tRow(f.km, cols.km, y);
-      tRow(f.personen, cols.pers, y);
+      tRow(f.abfahrt, cols.abfahrt, y - 3);
+      tRow(f.strecke, cols.strecke, y - 3);
+      tRow(f.ankunft, cols.ankunft, y - 3);
+      tRow(f.km, cols.km, y - 3);
+      tRow(f.personen, cols.pers, y - 3);
     });
 
     const filled = await pdfDoc.save();
