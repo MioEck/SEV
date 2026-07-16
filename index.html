@@ -174,7 +174,7 @@
 <header>
   <div>
     <h1>SEV Fahrtbericht</h1>
-    <div style="font-size:10px;opacity:0.7">v4.5</div>
+    <div style="font-size:10px;opacity:0.7">v4.6</div>
   </div>
   <span id="umlauf-display">4208-809</span>
 </header>
@@ -199,6 +199,9 @@
       </div>
     </label>
     <input type="file" id="pdf-upload" accept="application/pdf" style="display:none" onchange="loadPDF(this)">
+    <button id="btn-reset-vorlage" onclick="resetVorlage()" style="display:none;margin-top:8px;width:100%;padding:8px;background:none;border:1px solid #1e4070;border-radius:8px;color:#6a9ab8;font-size:12px;cursor:pointer">
+      ↩ Zurück zur Standard-Vorlage
+    </button>
   </div>
 
   <div class="section-title">Auftrag</div>
@@ -551,12 +554,34 @@ async function loadPDFfromDB() {
   } catch(e) { return null; }
 }
 
-function setPDFLabel(name) {
+function setPDFLabel(name, isCustom = true) {
   const label = document.getElementById('pdf-upload-label');
   const box   = document.getElementById('pdf-upload-box');
+  const btnReset = document.getElementById('btn-reset-vorlage');
   label.textContent = '✓ ' + name;
   box.style.borderColor = '#00c8e8';
   box.style.color = '#00c8e8';
+  if (btnReset) btnReset.style.display = isCustom ? 'block' : 'none';
+}
+
+function resetVorlage() {
+  localStorage.removeItem('sev_pdf_b64');
+  localStorage.removeItem('sev_pdf_name');
+  uploadedPDFBytes = null;
+  // IndexedDB leeren
+  openDB().then(db => {
+    const tx = db.transaction('files', 'readwrite');
+    tx.objectStore('files').delete('template');
+    tx.objectStore('files').delete('templateName');
+  });
+  const label = document.getElementById('pdf-upload-label');
+  const box   = document.getElementById('pdf-upload-box');
+  const btnReset = document.getElementById('btn-reset-vorlage');
+  label.textContent = '✓ Standard-Vorlage aktiv · Antippen zum Ersetzen';
+  box.style.borderColor = '#00c8e8';
+  box.style.color = '#00c8e8';
+  if (btnReset) btnReset.style.display = 'none';
+  showToast('Standard-Vorlage wiederhergestellt');
 }
 
 function loadPDF(input) {
@@ -690,13 +715,16 @@ const _pdfName = localStorage.getItem('sev_pdf_name');
 if (_b64) {
   try {
     uploadedPDFBytes = base64ToUint8(_b64);
-    setPDFLabel(_pdfName || 'Vorlage');
+    setPDFLabel(_pdfName || 'Eigene Vorlage', true);
   } catch(e) {
     localStorage.removeItem('sev_pdf_b64');
-    loadPDFfromDB().then(r => { if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Vorlage'); }});
+    loadPDFfromDB().then(r => { if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Eigene Vorlage', true); }});
   }
 } else {
-  loadPDFfromDB().then(r => { if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Vorlage'); }});
+  loadPDFfromDB().then(r => {
+    if (r?.bytes) { uploadedPDFBytes = r.bytes; setPDFLabel(r.name || 'Eigene Vorlage', true); }
+    // sonst: Standard-Vorlage (PDF_B64) wird automatisch genutzt
+  });
 }
 </script>
 <script>
